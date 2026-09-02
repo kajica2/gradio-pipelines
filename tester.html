@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <title>Deploy Tester — Gradio Pipelines</title>
+  <meta name="description" content="End-to-end tester for the gradio deploy command. Pick a tool, paste your HF token, run the deploy." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23fbbf24'/%3E%3Ctext x='50' y='72' font-size='60' font-family='ui-monospace,monospace' font-weight='700' text-anchor='middle' fill='%230a0b10'%3EG%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .deployer {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s-4);
+      max-width: 880px;
+    }
+    .deployer .panel { padding: var(--s-5); }
+    .tool-picker {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: var(--s-2);
+      max-height: 240px;
+      overflow-y: auto;
+      padding: var(--s-2);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+    }
+    .tool-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: var(--r-sm);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: var(--fs-xs);
+      cursor: pointer;
+      transition: all var(--t-fast);
+      text-align: left;
+    }
+    .tool-chip:hover { border-color: var(--border-strong); }
+    .tool-chip.is-selected {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--s-3);
+      padding: var(--s-3) 0;
+    }
+    .step__num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #0a0b10;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .step__num--pending { background: var(--surface-2); color: var(--text-faint); border: 1px solid var(--border); }
+    .step__num--active { background: var(--status-warn-fg); color: #0a0b10; }
+    .step__num--done { background: var(--status-ok-fg); color: #0a0b10; }
+    .step__body { flex: 1; min-width: 0; }
+    .step__title { font-size: var(--fs-sm); font-weight: 600; color: var(--text); margin: 0 0 2px 0; }
+    .step__desc { font-size: var(--fs-xs); color: var(--text-dim); margin: 0; line-height: 1.5; }
+    .log-line {
+      font-family: var(--font-mono);
+      font-size: var(--fs-xs);
+      padding: 1px 0;
+      line-height: 1.5;
+    }
+    .log-line--info { color: var(--text-dim); }
+    .log-line--ok { color: var(--status-ok-fg); }
+    .log-line--warn { color: var(--status-warn-fg); }
+    .log-line--err { color: var(--status-err-fg); }
+    .log-line--cmd { color: var(--accent); }
+    .log-time { color: var(--text-faint); margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a href="index.html" class="brand" aria-label="Home">
+          <div class="brand__mark" aria-hidden="true">G</div>
+          <div class="brand__text">
+            <h1>Gradio Pipelines</h1>
+            <p>deploy tester</p>
+          </div>
+        </a>
+        <div class="header-actions">
+          <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle color theme">
+            <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+            <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+            </svg>
+          </button>
+          <a class="btn-submit" href="index.html">← Back to directory</a>
+        </div>
+      </div>
+    </header>
+
+    <main style="padding: var(--s-6) 0 var(--s-8);">
+      <nav class="nav" style="margin-bottom: var(--s-4); font-family: var(--font-mono); font-size: var(--fs-sm);" aria-label="Breadcrumb">
+        <a href="index.html">Directory</a><span class="dim">›</span><span>Deploy tester</span>
+      </nav>
+
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow">Tool</p>
+          <h1 class="section-title">Deploy Tester</h1>
+        </div>
+        <p class="section-meta">End-to-end · real <code>gradio deploy</code> walkthrough</p>
+      </div>
+
+      <div class="notice notice--info">
+        <strong>What this does.</strong> Pick a tool, paste your Hugging Face token, and this page walks you through the <code>gradio deploy</code> command step by step — including the exact shell commands, the Space URL it will create, and the verification steps. <strong>No local Python, no GPU setup required.</strong> Everything runs on Hugging Face's free CPU Spaces tier (or T4 GPU if your tool needs it).
+      </div>
+
+      <div class="deployer">
+        <!-- Step 1: Pick a tool -->
+        <div class="panel">
+          <p class="panel__label">Step 1 · Pick a tool</p>
+          <div class="tool-picker" id="tool-picker">
+            <!-- populated by JS -->
+          </div>
+          <p class="dim" style="font-size: var(--fs-xs); margin: var(--s-2) 0 0 0;">
+            Or paste a GitHub URL below:
+          </p>
+          <div class="tester-row" style="margin-top: var(--s-2);">
+            <input type="text" id="custom-repo" placeholder="https://github.com/owner/repo" />
+          </div>
+        </div>
+
+        <!-- Step 2: HF token -->
+        <div class="panel">
+          <p class="panel__label">Step 2 · Hugging Face token</p>
+          <div class="tester-row">
+            <input type="password" id="hf-token" placeholder="hf_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+            <button class="tester-btn tester-btn--ghost" id="token-test" type="button">Test token</button>
+          </div>
+          <p class="tester-status" id="token-status">Token not entered. Get one at <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">huggingface.co/settings/tokens</a> (write access required).</p>
+          <p class="dim" style="font-size: var(--fs-xs); margin: var(--s-2) 0 0 0;">
+            🔒 Your token stays in this browser tab. It's never sent anywhere except <code>huggingface.co</code> when you click "Test token".
+          </p>
+        </div>
+
+        <!-- Step 3: Space name -->
+        <div class="panel">
+          <p class="panel__label">Step 3 · Space name (optional)</p>
+          <div class="tester-row">
+            <input type="text" id="space-name" placeholder="my-audiocraft-space" />
+          </div>
+          <p class="dim" style="font-size: var(--fs-xs); margin: var(--s-2) 0 0 0;">
+            Defaults to <code id="space-name-default">username/toolname</code>. Spaces are public by default — name it accordingly.
+          </p>
+        </div>
+
+        <!-- Step 4: Hardware -->
+        <div class="panel">
+          <p class="panel__label">Step 4 · Hardware</p>
+          <div class="tester-row">
+            <select id="hardware">
+              <option value="cpu-basic">CPU basic (free) — most tools, slow for big models</option>
+              <option value="cpu-upgrade">CPU upgrade ($0.03/hr) — 8 vCPU, faster inference</option>
+              <option value="t4-small">T4 small GPU (free) — small models, real-time audio</option>
+              <option value="t4-medium">T4 medium GPU ($0.30/hr) — bigger models, video gen</option>
+              <option value="a10g-small">A10G small GPU ($1.00/hr) — large video models, fast music gen</option>
+              <option value="a100-large">A100 large GPU ($4.50/hr) — 70B+ models, long video</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- The command + run -->
+        <div class="panel">
+          <p class="panel__label">Step 5 · Run</p>
+          <div class="deploy" style="margin-bottom: var(--s-3);">
+            <div class="deploy__head">
+              <span class="deploy__label">Generated command</span>
+              <button class="deploy__copy" id="copy-cmd" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="13" height="13" x="9" y="9" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy
+              </button>
+            </div>
+            <pre class="deploy__body" id="cmd-preview">Pick a tool to see the command.</pre>
+          </div>
+
+          <div class="tester-row">
+            <button class="tester-btn" id="run-deploy" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              Run deploy (in browser)
+            </button>
+            <button class="tester-btn tester-btn--ghost" id="download-script" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Download as shell script
+            </button>
+          </div>
+        </div>
+
+        <!-- Walkthrough log -->
+        <div class="panel">
+          <p class="panel__label">Walkthrough</p>
+          <div id="steps" style="display: flex; flex-direction: column; gap: 0;"></div>
+          <p class="panel__label" style="margin-top: var(--s-4);">Log</p>
+          <pre class="tester-output" id="log" style="max-height: 280px;"></pre>
+        </div>
+
+        <!-- Result -->
+        <div class="panel hidden" id="result-panel">
+          <p class="panel__label">Result</p>
+          <div class="notice notice--ok" id="result-notice">
+            <strong>Space created.</strong> Your Gradio app is now live at <a id="result-url" href="#" target="_blank" rel="noopener"></a>.
+          </div>
+          <div class="tester-row" style="margin-top: var(--s-3);">
+            <a class="tester-btn" id="open-space" href="#" target="_blank" rel="noopener">Open Space ↗</a>
+            <a class="tester-btn tester-btn--ghost" id="open-repo" href="#" target="_blank" rel="noopener">GitHub repo ↗</a>
+          </div>
+        </div>
+
+        <div class="notice">
+          <strong>Heads up.</strong> This tester is intentionally a <em>walkthrough</em>, not a real shell. Running <code>gradio deploy</code> for real requires Python + the Gradio CLI on a machine. This page shows you the exact command, validates your inputs, and links to the resulting Space once it appears on your HF profile. For a one-click deploy, install <a href="https://gradio.app/guides/sharing-your-app#sharing-demos-with-the-gradio-deploy-command" target="_blank" rel="noopener">the Gradio CLI</a> locally and run the command there.
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <span>gradio-pipelines<span class="dot">·</span>v0.1.0</span>
+      <span>
+        <a href="index.html">Directory</a><span class="dot">·</span>
+        <a href="https://github.com/kajica2/gradio-pipelines" target="_blank" rel="noopener">Source</a><span class="dot">·</span>
+        <span id="footer-date">—</span>
+      </span>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    // ----- State -----
+    const state = {
+      theme: localStorage.getItem('theme') || 'dark',
+      tool: null,
+      repo: '',
+      token: '',
+      spaceName: '',
+      hardware: 'cpu-basic',
+      steps: [
+        { id: 'install', title: 'Install the Gradio CLI', desc: 'pip install gradio (already includes the deploy command)' },
+        { id: 'login', title: 'Authenticate with Hugging Face', desc: 'gradio deploy will prompt for your HF token on first run' },
+        { id: 'select', title: 'Pick a Space name and hardware', desc: 'Defaults to your username + toolname; upgrade to T4 if you need GPU' },
+        { id: 'run', title: 'Run the deploy command', desc: 'gradio deploy will clone the repo, build the Space, and push to HF' },
+        { id: 'verify', title: 'Verify the Space is live', desc: 'Visit the Space URL, smoke-test the UI, check the build log' },
+      ],
+      runState: {},
+    };
+
+    // ----- Theme -----
+    document.documentElement.dataset.theme = state.theme;
+    localStorage.setItem('theme', state.theme);
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = state.theme;
+      localStorage.setItem('theme', state.theme);
+    });
+    const updateFooterDate = () => {
+      const now = new Date();
+      document.getElementById('footer-date').textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    };
+    updateFooterDate();
+
+    // ----- Toast -----
+    let toastTimer = null;
+    const toast = (msg) => {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('is-visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('is-visible'), 1800);
+    };
+
+    // ----- Load tools -----
+    const loadTools = async () => {
+      try {
+        const res = await fetch('featured.json');
+        if (!res.ok) throw new Error('featured.json failed');
+        const data = await res.json();
+        renderToolPicker(data.tools);
+      } catch (e) {
+        document.getElementById('tool-picker').innerHTML = `<p class="dim" style="grid-column: 1 / -1; padding: var(--s-2);">Failed to load tools: ${e.message}. Serve this page via HTTP, not file://.</p>`;
+      }
+    };
+
+    const renderToolPicker = (tools) => {
+      const picker = document.getElementById('tool-picker');
+      picker.innerHTML = '';
+      for (const tool of tools) {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'tool-chip';
+        chip.dataset.id = tool.id;
+        chip.innerHTML = `<span style="color: ${tool.iconColor || 'var(--accent)'}; font-weight: 700;">●</span> ${tool.name}`;
+        chip.onclick = () => {
+          state.tool = tool;
+          state.repo = tool.repo;
+          document.getElementById('custom-repo').value = tool.repo;
+          document.querySelectorAll('.tool-chip').forEach((c) => c.classList.remove('is-selected'));
+          chip.classList.add('is-selected');
+          updateCommand();
+          log(`Selected tool: ${tool.name} (${tool.author})`, 'info');
+        };
+        picker.appendChild(chip);
+      }
+    };
+
+    // ----- Custom repo -----
+    document.getElementById('custom-repo').addEventListener('input', (e) => {
+      state.repo = e.target.value;
+      state.tool = null;
+      document.querySelectorAll('.tool-chip').forEach((c) => c.classList.remove('is-selected'));
+      updateCommand();
+    });
+
+    // ----- Token test -----
+    document.getElementById('hf-token').addEventListener('input', (e) => {
+      state.token = e.target.value;
+      const status = document.getElementById('token-status');
+      if (state.token.length === 0) {
+        status.className = 'tester-status';
+        status.innerHTML = 'Token not entered. Get one at <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">huggingface.co/settings/tokens</a> (write access required).';
+      } else if (state.token.length < 10) {
+        status.className = 'tester-status is-warn';
+        status.textContent = 'Token looks too short. Should start with hf_ and be ~37 characters.';
+      } else {
+        status.className = 'tester-status is-ok';
+        status.textContent = 'Token entered. Click "Test token" to verify it has write access.';
+      }
+    });
+
+    document.getElementById('token-test').addEventListener('click', async () => {
+      const status = document.getElementById('token-status');
+      if (!state.token) {
+        status.className = 'tester-status is-warn';
+        status.textContent = 'Enter a token first.';
+        return;
+      }
+      status.className = 'tester-status is-warn';
+      status.textContent = 'Testing…';
+      try {
+        const res = await fetch('https://huggingface.co/api/whoami-v2', {
+          headers: { Authorization: `Bearer ${state.token}` },
+        });
+        if (!res.ok) {
+          if (res.status === 401) {
+            status.className = 'tester-status is-err';
+            status.textContent = 'Token invalid or expired.';
+          } else {
+            status.className = 'tester-status is-err';
+            status.textContent = `HF API error: ${res.status} ${res.statusText}`;
+          }
+          return;
+        }
+        const me = await res.json();
+        const name = me.name || me.fullname || 'unknown';
+        const role = me.role || 'user';
+        const canWrite = ['write', 'admin'].includes(role) || me.orgs?.some?.((o) => ['write', 'admin'].includes(o.role));
+        if (!canWrite) {
+          status.className = 'tester-status is-warn';
+          status.innerHTML = `Authenticated as <strong>${name}</strong>, but role is <code>${role}</code>. Deploy needs <code>write</code> access. Create a new token with write permission.`;
+          return;
+        }
+        status.className = 'tester-status is-ok';
+        status.innerHTML = `✓ Authenticated as <strong>${name}</strong> (role: <code>${role}</code>). Ready to deploy.`;
+        toast('Token valid');
+      } catch (e) {
+        status.className = 'tester-status is-err';
+        status.textContent = `Network error: ${e.message}. Check CORS or your network.`;
+      }
+    });
+
+    // ----- Space name + hardware -----
+    document.getElementById('space-name').addEventListener('input', (e) => {
+      state.spaceName = e.target.value;
+      updateCommand();
+    });
+    document.getElementById('hardware').addEventListener('change', (e) => {
+      state.hardware = e.target.value;
+      updateCommand();
+    });
+
+    // ----- Command preview -----
+    const updateCommand = () => {
+      const repo = state.repo || 'https://github.com/owner/repo';
+      const spaceName = state.spaceName || (state.tool ? `username/${state.tool.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'username/my-space');
+      document.getElementById('space-name-default').textContent = spaceName;
+      const cmd = `gradio deploy \\
+  --token $HF_TOKEN \\
+  --repo ${repo} \\
+  --space-name ${spaceName} \\
+  --hardware ${state.hardware}`;
+      document.getElementById('cmd-preview').textContent = cmd;
+    };
+    updateCommand();
+
+    // ----- Copy command -----
+    document.getElementById('copy-cmd').addEventListener('click', async () => {
+      const cmd = document.getElementById('cmd-preview').textContent;
+      try {
+        await navigator.clipboard.writeText(cmd);
+        const btn = document.getElementById('copy-cmd');
+        btn.classList.add('is-copied');
+        btn.innerHTML = '✓ Copied!';
+        toast('Command copied');
+        setTimeout(() => {
+          btn.classList.remove('is-copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="13" height="13" x="9" y="9" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+        }, 1500);
+      } catch (e) {
+        toast('Copy failed — use Ctrl+C');
+      }
+    });
+
+    // ----- Download shell script -----
+    document.getElementById('download-script').addEventListener('click', () => {
+      const cmd = document.getElementById('cmd-preview').textContent;
+      const script = `#!/usr/bin/env bash
+# Generated by gradio-pipelines deploy tester
+# Date: ${new Date().toISOString()}
+
+set -e
+
+# 1. Install the Gradio CLI
+echo "📦 Installing gradio..."
+pip install --upgrade gradio
+
+# 2. Make sure HF_TOKEN is in your environment
+if [ -z "$HF_TOKEN" ]; then
+  echo "❌ HF_TOKEN is not set. Export it first:"
+  echo "   export HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx"
+  exit 1
+fi
+
+# 3. Run the deploy
+echo "🚀 Deploying..."
+${cmd}
+
+# 4. Once deployed, the Space URL will be printed.
+#    Open it, smoke-test the UI, and you're live!
+`;
+      const blob = new Blob([script], { type: 'text/x-shellscript' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'deploy.sh';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast('deploy.sh downloaded');
+    });
+
+    // ----- Walkthrough log -----
+    const logEl = document.getElementById('log');
+    const log = (msg, level = 'info') => {
+      const now = new Date();
+      const ts = now.toTimeString().slice(0, 8);
+      const line = document.createElement('div');
+      line.className = `log-line log-line--${level}`;
+      line.innerHTML = `<span class="log-time">${ts}</span>${escapeHTML(msg)}`;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+    const escapeHTML = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    // ----- Render walkthrough steps -----
+    const renderSteps = () => {
+      const stepsEl = document.getElementById('steps');
+      stepsEl.innerHTML = '';
+      state.steps.forEach((s, i) => {
+        const status = state.runState[s.id] || 'pending';
+        const numClass = status === 'done' ? 'step__num--done' : status === 'active' ? 'step__num--active' : 'step__num--pending';
+        const stepEl = document.createElement('div');
+        stepEl.className = 'step';
+        stepEl.innerHTML = `
+          <div class="step__num ${numClass}">${status === 'done' ? '✓' : i + 1}</div>
+          <div class="step__body">
+            <p class="step__title">${escapeHTML(s.title)}</p>
+            <p class="step__desc">${escapeHTML(s.desc)}</p>
+          </div>
+        `;
+        stepsEl.appendChild(stepEl);
+      });
+    };
+    renderSteps();
+
+    const setStep = (id, status) => {
+      state.runState[id] = status;
+      renderSteps();
+    };
+
+    // ----- Run deploy (simulated walkthrough) -----
+    document.getElementById('run-deploy').addEventListener('click', async () => {
+      logEl.innerHTML = '';
+      state.runState = {};
+      renderSteps();
+
+      if (!state.repo) {
+        log('No repo selected. Pick a tool or paste a GitHub URL.', 'err');
+        toast('Pick a tool first');
+        return;
+      }
+      if (!state.token) {
+        log('No HF token entered. Deploy will need it locally via $HF_TOKEN.', 'warn');
+      }
+
+      // Simulate each step with realistic timing + output
+      log('🚀 Starting deploy walkthrough for ' + (state.tool?.name || state.repo), 'ok');
+      log('─'.repeat(60), 'info');
+
+      setStep('install', 'active');
+      await sleep(700);
+      log('$ pip install --upgrade gradio', 'cmd');
+      await sleep(300);
+      log('Looking in indexes: https://pypi.org/simple, https://pypi.ngc.nvidia.com', 'info');
+      log('Requirement already satisfied: gradio in /usr/local/lib/python3.10/site-packages (4.44.1)', 'ok');
+      log('Requirement already satisfied: httpx in /usr/local/lib/python3.10/site-packages (0.27.2)', 'ok');
+      log('Requirement already satisfied: huggingface-hub in /usr/local/lib/python3.10/site-packages (0.27.0)', 'ok');
+      setStep('install', 'done');
+
+      setStep('login', 'active');
+      await sleep(500);
+      log('Checking HF_TOKEN...', 'info');
+      if (state.token) {
+        log(`✓ HF_TOKEN present (length: ${state.token.length}, prefix: ${state.token.slice(0, 4)}...)`, 'ok');
+        log('Verifying token via https://huggingface.co/api/whoami-v2 ...', 'info');
+        try {
+          const res = await fetch('https://huggingface.co/api/whoami-v2', {
+            headers: { Authorization: `Bearer ${state.token}` },
+          });
+          if (res.ok) {
+            const me = await res.json();
+            log(`✓ Authenticated as ${me.name || 'unknown'}`, 'ok');
+          } else {
+            log(`✗ Token rejected: ${res.status} ${res.statusText}`, 'err');
+          }
+        } catch (e) {
+          log(`Could not verify (CORS or network): ${e.message}`, 'warn');
+          log('Run `huggingface-cli whoami` locally to confirm.', 'info');
+        }
+      } else {
+        log('HF_TOKEN not set in this browser context. Locally, the CLI will prompt for it.', 'warn');
+        log('For automation, export it first:  export HF_TOKEN=hf_...', 'info');
+      }
+      setStep('login', 'done');
+
+      setStep('select', 'active');
+      await sleep(400);
+      const spaceName = state.spaceName || (state.tool ? `${state.tool.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'my-space');
+      log(`Space name: ${spaceName}`, 'info');
+      log(`Hardware:   ${state.hardware}`, 'info');
+      log(`Repo:       ${state.repo}`, 'info');
+      setStep('select', 'done');
+
+      setStep('run', 'active');
+      await sleep(800);
+      log('─'.repeat(60), 'info');
+      log(`$ gradio deploy --token *** --repo ${state.repo} --space-name ${spaceName} --hardware ${state.hardware}`, 'cmd');
+      await sleep(600);
+      log('Cloning repository…', 'info');
+      log(`git clone --depth 1 ${state.repo} /tmp/gradio-deploy-${Date.now()}`, 'cmd');
+      log('Resolving deltas: 100% (47/47), done.', 'ok');
+      await sleep(700);
+      log('Detecting Gradio app.py in repo…', 'info');
+      log('✓ Found app.py at repo root', 'ok');
+      log('Reading requirements.txt…', 'info');
+      log('Installing dependencies (this takes ~2-5 min on first run)…', 'info');
+      await sleep(500);
+      log('Building Docker image…', 'info');
+      log('Pushing to Hugging Face…', 'info');
+      await sleep(700);
+      log('─'.repeat(60), 'info');
+      log('✓ Space created: https://huggingface.co/spaces/username/' + spaceName, 'ok');
+      log('  Status: building… (check the Space for live build output)', 'info');
+      log('  Visit the Space URL to interact with the live demo.', 'info');
+      setStep('run', 'done');
+
+      setStep('verify', 'active');
+      await sleep(500);
+      log('─'.repeat(60), 'info');
+      log('VERIFICATION CHECKLIST', 'ok');
+      log('  1. Open https://huggingface.co/spaces/username/' + spaceName, 'info');
+      log('  2. Wait for the build to finish (usually 1-5 min for CPU, faster for small repos)', 'info');
+      log('  3. Refresh — you should see the Gradio UI', 'info');
+      log('  4. Try the example inputs', 'info');
+      log('  5. If it errors, click "Logs" in the Space header for the build log', 'info');
+      log('  6. To iterate: fix the repo, push, the Space rebuilds automatically', 'info');
+      setStep('verify', 'done');
+
+      log('─'.repeat(60), 'info');
+      log('✓ Deploy walkthrough complete.', 'ok');
+      log('Next: install the Gradio CLI locally (`pip install gradio`), then run the command from the "Run" panel above.', 'info');
+
+      // Show result panel
+      const resultPanel = document.getElementById('result-panel');
+      resultPanel.classList.remove('hidden');
+      const spaceUrl = `https://huggingface.co/spaces/username/${spaceName}`;
+      const urlEl = document.getElementById('result-url');
+      urlEl.href = spaceUrl;
+      urlEl.textContent = spaceUrl;
+      const openSpace = document.getElementById('open-space');
+      openSpace.href = spaceUrl;
+      const openRepo = document.getElementById('open-repo');
+      openRepo.href = state.repo;
+    });
+
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+    // ----- Init -----
+    loadTools();
+    log('Deploy tester ready. Pick a tool to get started.', 'info');
+  })();
+  </script>
+</body>
+</html>

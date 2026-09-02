@@ -1,0 +1,3 @@
+# Make sure `gradio deploy` picks up the Dockerfile and the HF README
+Dockerfile   linguist-detectable=true
+README_HF.md linguist-detectable=true

@@ -1,0 +1,47 @@
+{
+  "version": "2026.08.08",
+  "groups": [
+    {
+      "id": "domain",
+      "label": "Domain",
+      "type": "single",
+      "default": "all",
+      "options": [
+        { "id": "all", "label": "All domains", "icon": "grid", "count": 24 },
+        { "id": "audio", "label": "Audio", "icon": "audio", "count": 17 },
+        { "id": "video", "label": "Video", "icon": "video", "count": 7 }
+      ]
+    },
+    {
+      "id": "category",
+      "label": "Category",
+      "type": "multi",
+      "options": [
+        { "id": "music-generation", "label": "Music generation", "icon": "music", "count": 6 },
+        { "id": "music-transcription", "label": "Music transcription", "icon": "piano", "count": 1 },
+        { "id": "speech", "label": "Speech recognition", "icon": "mic", "count": 2 },
+        { "id": "text-to-speech", "label": "Text-to-speech", "icon": "speaker", "count": 1 },
+        { "id": "voice-cloning", "label": "Voice cloning", "icon": "clone", "count": 3 },
+        { "id": "voice-conversion", "label": "Voice conversion", "icon": "transform", "count": 2 },
+        { "id": "source-separation", "label": "Source separation", "icon": "layers", "count": 2 },
+        { "id": "audio-generation", "label": "Audio generation", "icon": "wave", "count": 1 },
+        { "id": "video-generation", "label": "Video generation", "icon": "film", "count": 5 },
+        { "id": "video-to-audio", "label": "Video → audio", "icon": "video-audio", "count": 1 },
+        { "id": "vision", "label": "Vision / VLM", "icon": "eye", "count": 1 }
+      ]
+    },
+    {
+      "id": "badge",
+      "label": "Type",
+      "type": "multi",
+      "options": [
+        { "id": "tool", "label": "Tool", "icon": "wrench", "count": 24 }
+      ]
+    }
+  ],
+  "sort": [
+    { "id": "stars", "label": "Most stars", "default": true },
+    { "id": "updated", "label": "Recently updated" },
+    { "id": "name", "label": "Name (A→Z)" }
+  ]
+}

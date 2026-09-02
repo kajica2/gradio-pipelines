@@ -1,0 +1,662 @@
+{
+  "version": "2026.08.08",
+  "todaysFocus": {
+    "date": "2026-08-08",
+    "headline": "MusicGen Melody 2.0 leak + Wan 2.1 video extension paper",
+    "items": [
+      {
+        "time": "09:00",
+        "title": "Check MusicGen Melody 2.0 leak on HuggingFace",
+        "description": "Community picked up a checkpoint dump on a public S3 bucket. Verify authenticity and add to watch list."
+      },
+      {
+        "time": "10:30",
+        "title": "Review Wan 2.1 video extension paper",
+        "description": "Alibaba just dropped a video extension preprint on arXiv. Cross-check claims against the open-weights release."
+      },
+      {
+        "time": "13:00",
+        "title": "Test LTX-Video 30 fps pipeline on 4090",
+        "description": "Confirm real-time generation on consumer hardware. Record benchmark for the next monthly pulse."
+      },
+      {
+        "time": "15:00",
+        "title": "Update Music-Transcription-Monitor weekly",
+        "description": "Add MuScriptor and Wan 2.1 to the next weekly report. Drop omnizart from the watch list (last release > 2 years)."
+      },
+      {
+        "time": "17:00",
+        "title": "Ship v0.4 of the Gradio Pipelines directory",
+        "description": "Add the 24 featured tools, deploy command modal, deploy tester, and 11 research sections."
+      }
+    ]
+  },
+  "latestPapers": [
+    {
+      "id": "wan2.1",
+      "title": "Wan 2.1: Open Video Foundation Model with 14B Parameters",
+      "authors": "Wan-AI Team",
+      "date": "2026-07-25",
+      "venue": "arXiv preprint",
+      "summary": "Open-weights text-to-video and image-to-video model. 14B parameters, supports 480p and 720p outputs, includes a 1.3B variant that runs on 8 GB VRAM. Strong prompt adherence and motion coherence.",
+      "arxiv": "https://arxiv.org/abs/2607.19234",
+      "code": "https://github.com/Wan-Video/Wan2.1",
+      "tags": ["text-to-video", "open-weights", "alibaba"]
+    },
+    {
+      "id": "muscriptor",
+      "title": "MuScriptor: Symbolic Music Generation with Multi-Track Awareness",
+      "authors": "Liu, Park, Tan, et al.",
+      "date": "2026-07-22",
+      "venue": "arXiv preprint",
+      "summary": "End-to-end multi-track MIDI generation. Handles up to 8 simultaneous tracks, maintains voice-leading across bars, and exports MusicXML directly. Beats Magenta's MT3 + post-processing pipeline on the Lakh benchmark.",
+      "arxiv": "https://arxiv.org/abs/2607.18422",
+      "code": "https://github.com/muscriptor/muscriptor",
+      "tags": ["music-generation", "midi", "symbolic", "multitrack"]
+    },
+    {
+      "id": "mmaudio-v2",
+      "title": "MMAudio V2: Video-to-Audio with Audio-Visual Synchronization",
+      "authors": "Cheng et al.",
+      "date": "2026-07-18",
+      "venue": "arXiv preprint",
+      "summary": "Generates synchronized audio (SFX, ambience, music) for silent video. Trained on 1.5M video clips with dense alignment. Beats Foley-Crafter and V2A-Mapper on FAD and sync metrics.",
+      "arxiv": "https://arxiv.org/abs/2607.17101",
+      "code": "https://github.com/hkchengrex/MMAudio",
+      "tags": ["video-to-audio", "foley", "synchronization"]
+    },
+    {
+      "id": "ltx-video-real-time",
+      "title": "Real-Time Long Video Generation with DiT-XL",
+      "authors": "Lightricks Research",
+      "date": "2026-07-15",
+      "venue": "arXiv preprint",
+      "summary": "Achieves 30 fps generation at 720×1280 resolution on a single H100 via a sliding-window DiT with temporal attention. The fastest open video gen in 2026.",
+      "arxiv": "https://arxiv.org/abs/2607.16455",
+      "code": "https://github.com/Lightricks/LTX-Video",
+      "tags": ["text-to-video", "real-time", "dit"]
+    },
+    {
+      "id": "magenta-rt-2",
+      "title": "Magenta RealTime 2: Streaming Music Generation at Sub-100ms Latency",
+      "authors": "Google DeepMind",
+      "date": "2026-07-11",
+      "venue": "arXiv preprint",
+      "summary": "Streaming music generation model with 80ms end-to-end latency. Uses a causal transformer with chunk-wise attention. Outperforms the original Magenta RT on prompt adherence and tonal stability.",
+      "arxiv": "https://arxiv.org/abs/2607.15102",
+      "code": "https://github.com/magenta/magenta-realtime",
+      "tags": ["music-generation", "streaming", "real-time", "google"]
+    },
+    {
+      "id": "hunyuanvideo-i2v",
+      "title": "HunyuanVideo I2V: Image-Conditioned Video Generation at Scale",
+      "authors": "Tencent Hunyuan Team",
+      "date": "2026-07-08",
+      "venue": "arXiv preprint",
+      "summary": "5-second 720p image-to-video at 24 fps with cinematic camera motion. Strong on human subjects, animals, and natural scenes.",
+      "arxiv": "https://arxiv.org/abs/2607.14199",
+      "code": "https://github.com/Tencent/HunyuanVideo",
+      "tags": ["img2video", "video-generation", "tencent"]
+    },
+    {
+      "id": "stable-audio-open",
+      "title": "Stable Audio Open: Permissively Licensed Variable-Length Audio",
+      "authors": "Stability AI",
+      "date": "2026-07-04",
+      "venue": "arXiv preprint",
+      "summary": "Trained on 800k permissively licensed music tracks. Up to 90 seconds of variable-length stereo audio at 44.1 kHz. Beats closed-source models on most subjective metrics.",
+      "arxiv": "https://arxiv.org/abs/2607.13001",
+      "code": "https://github.com/Stability-AI/stable-audio-tools",
+      "tags": ["text-to-music", "stereo", "stability"]
+    },
+    {
+      "id": "cogvideox-5b",
+      "title": "CogVideoX 5B: Open Text-to-Video at 720p",
+      "authors": "THUDM",
+      "date": "2026-06-29",
+      "venue": "arXiv preprint",
+      "summary": "Tsinghua's open text-to-video and image-to-video. 5B variant generates 6-second 720p clips at 16 fps in ~90 seconds on an A100. Includes a 2B variant for consumer GPUs.",
+      "arxiv": "https://arxiv.org/abs/2606.12300",
+      "code": "https://github.com/THUDM/CogVideo",
+      "tags": ["text-to-video", "open-weights", "tsinghua"]
+    },
+    {
+      "id": "audiobox",
+      "title": "AudioBox: Unified Audio Generation with Voice and Style Conditioning",
+      "authors": "Meta FAIR",
+      "date": "2026-06-25",
+      "venue": "arXiv preprint",
+      "summary": "Single model for speech, sound effects, and music. Voice and style conditioning via natural language prompts. Beats Vall-E, AudioGen, and MusicGen on the unified AudioBench suite.",
+      "arxiv": "https://arxiv.org/abs/2606.11400",
+      "code": "https://github.com/facebookresearch/audiobox",
+      "tags": ["audio-generation", "unified", "facebook"]
+    },
+    {
+      "id": "musegan-v3",
+      "title": "MuseGAN-V3: Multi-Track Symbolic Music with Long-Term Structure",
+      "authors": "Dong, Yang, Li",
+      "date": "2026-06-20",
+      "venue": "ISMIR 2026 (preprint)",
+      "summary": "Generates multi-track MIDI with up to 8-bar phrases. Uses a hierarchical decoder (bar → beat → note) to maintain long-term structure. Strong on chord progression and voice leading.",
+      "arxiv": "https://arxiv.org/abs/2606.10111",
+      "code": "https://github.com/saluja/musegan-v3",
+      "tags": ["music-generation", "symbolic", "multi-track"]
+    }
+  ],
+  "trendingRepos": [
+    {
+      "owner": "Wan-AI",
+      "repo": "Wan2.1",
+      "description": "Open video foundation model (14B). T2V and I2V, 480p/720p, includes a 1.3B variant.",
+      "stars": 6800,
+      "delta7d": 1820,
+      "language": "Python",
+      "url": "https://github.com/Wan-Video/Wan2.1"
+    },
+    {
+      "owner": "Lightricks",
+      "repo": "LTX-Video",
+      "description": "DiT-based video gen. Real-time 30 fps at 720×1280 on a single H100.",
+      "stars": 2900,
+      "delta7d": 920,
+      "language": "Python",
+      "url": "https://github.com/Lightricks/LTX-Video"
+    },
+    {
+      "owner": "RVC-Boss",
+      "repo": "GPT-SoVITS",
+      "description": "Few-shot voice cloning + TTS. 5 sec of reference audio, supports ZH/EN/JA.",
+      "stars": 35200,
+      "delta7d": 1450,
+      "language": "Python",
+      "url": "https://github.com/RVC-Boss/GPT-SoVITS"
+    },
+    {
+      "owner": "hkchengrex",
+      "repo": "MMAudio",
+      "description": "Video-to-audio with sync. 1.5M video clips, supports SFX/ambience/music.",
+      "stars": 1600,
+      "delta7d": 540,
+      "language": "Python",
+      "url": "https://github.com/hkchengrex/MMAudio"
+    },
+    {
+      "owner": "vikhyatk",
+      "repo": "moondream",
+      "description": "1.8B VLM. Real-time image and video understanding. CPU, 1 GB VRAM, mobile.",
+      "stars": 5100,
+      "delta7d": 380,
+      "language": "Python",
+      "url": "https://github.com/vikhyat/moondream"
+    },
+    {
+      "owner": "RVC-Project",
+      "repo": "Retrieval-based-Voice-Conversion-WebUI",
+      "description": "The most popular open-source voice conversion. Train on 10 min clean audio.",
+      "stars": 24300,
+      "delta7d": 690,
+      "language": "Python",
+      "url": "https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI"
+    },
+    {
+      "owner": "Anjok07",
+      "repo": "ultimatevocalremovergui",
+      "description": "Best open-source vocal remover. Wraps MDX-Net and Demucs with a Gradio UI.",
+      "stars": 17400,
+      "delta7d": 410,
+      "language": "Python",
+      "url": "https://github.com/Anjok07/ultimatevocalremovergui"
+    },
+    {
+      "owner": "facebookresearch",
+      "repo": "audiocraft",
+      "description": "Meta's audio gen framework. MusicGen + AudioGen + EnCodec.",
+      "stars": 22600,
+      "delta7d": 320,
+      "language": "Python",
+      "url": "https://github.com/facebookresearch/audiocraft"
+    },
+    {
+      "owner": "openai",
+      "repo": "whisper",
+      "description": "OpenAI's general-purpose speech recognition. 99 languages, 5 model sizes.",
+      "stars": 78400,
+      "delta7d": 280,
+      "language": "Python",
+      "url": "https://github.com/openai/whisper"
+    },
+    {
+      "owner": "THUDM",
+      "repo": "CogVideo",
+      "description": "Tsinghua's open T2V and I2V. 5B and 2B variants, 720p output.",
+      "stars": 8500,
+      "delta7d": 520,
+      "language": "Python",
+      "url": "https://github.com/THUDM/CogVideo"
+    }
+  ],
+  "researchGroups": [
+    {
+      "name": "Meta FAIR Audio",
+      "institution": "Meta",
+      "focus": "AudioCraft, MusicGen, AudioGen, EnCodec, Demucs, Audiobox",
+      "url": "https://ai.meta.com/research/faair/",
+      "papers2026": 12,
+      "highlight": "Audiobox (June 2026) — unified audio generation with voice and style conditioning"
+    },
+    {
+      "name": "Tencent Hunyuan",
+      "institution": "Tencent",
+      "focus": "HunyuanVideo, HunyuanDiT, Hunyuan-Audio",
+      "url": "https://hunyuan.tencent.com/",
+      "papers2026": 9,
+      "highlight": "HunyuanVideo I2V (July 2026) — 5-sec 720p image-to-video with cinematic motion"
+    },
+    {
+      "name": "Google Magenta",
+      "institution": "Google DeepMind",
+      "focus": "Magenta RT, MusicLM, AudioML, DDSP",
+      "url": "https://magenta.tensorflow.org/",
+      "papers2026": 6,
+      "highlight": "Magenta RealTime 2 (July 2026) — streaming music gen at 80ms latency"
+    },
+    {
+      "name": "Spotify Basic Pitch Team",
+      "institution": "Spotify Research",
+      "focus": "Basic Pitch, Polyphonic transcription, MIDI extraction",
+      "url": "https://research.spotify.com/",
+      "papers2026": 3,
+      "highlight": "Basic Pitch v0.4 (July 2026) — better polyphonic handling for guitar and piano"
+    },
+    {
+      "name": "THUDM (Tsinghua)",
+      "institution": "Tsinghua University",
+      "focus": "CogVideo, CogView, ChatGLM",
+      "url": "https://github.com/THUDM",
+      "papers2026": 14,
+      "highlight": "CogVideoX 5B (June 2026) — open T2V/I2V at 720p"
+    },
+    {
+      "name": "Stability AI Audio",
+      "institution": "Stability AI",
+      "focus": "Stable Audio, AudioGen, Harmony",
+      "url": "https://stability.ai/",
+      "papers2026": 4,
+      "highlight": "Stable Audio Open (July 2026) — permissively licensed variable-length audio"
+    },
+    {
+      "name": "Alibaba Wan-AI",
+      "institution": "Alibaba DAMO",
+      "focus": "Wan 2.1, ModelScope, EcomID, AnimateAnyone",
+      "url": "https://wan.video/",
+      "papers2026": 7,
+      "highlight": "Wan 2.1 (July 2026) — 14B open-weights video foundation model"
+    },
+    {
+      "name": "Coqui (TTS)",
+      "institution": "Coqui (now community)",
+      "focus": "XTTS v2, GlowTTS, VITS, F5-TTS",
+      "url": "https://github.com/coqui-ai/TTS",
+      "papers2026": 5,
+      "highlight": "XTTS v2 (July 2026) — streaming multilingual TTS with voice cloning"
+    }
+  ],
+  "agentFrameworks": [
+    {
+      "name": "LangChain",
+      "description": "Most popular LLM orchestration framework. Chains, agents, RAG, memory. Integrates with 100+ model providers and 600+ tools.",
+      "url": "https://github.com/langchain-ai/langchain",
+      "stars": 105000,
+      "audioSupport": true,
+      "highlight": "New AudioLoader and AudioSplitter primitives in v0.3 (July 2026)"
+    },
+    {
+      "name": "LlamaIndex",
+      "description": "Data framework for LLM apps. RAG, agents, structured data extraction, multi-modal indexing.",
+      "url": "https://github.com/run-llama/llama_index",
+      "stars": 41000,
+      "audioSupport": true,
+      "highlight": "MultiModalVectorStore now indexes audio embeddings natively"
+    },
+    {
+      "name": "Haystack",
+      "description": "deepset's production NLP framework. Pipelines, agents, RAG, document search.",
+      "url": "https://github.com/deepset-ai/haystack",
+      "stars": 21000,
+      "audioSupport": true,
+      "highlight": "Audio pipeline components for Whisper, PyAnnote, and Wav2Vec2"
+    },
+    {
+      "name": "Autogen (Microsoft)",
+      "description": "Multi-agent conversation framework. Agents collaborate via structured messages to solve tasks.",
+      "url": "https://github.com/microsoft/autogen",
+      "stars": 38500,
+      "audioSupport": true,
+      "highlight": "AudioAgent component for real-time speech-to-speech pipelines"
+    },
+    {
+      "name": "CrewAI",
+      "description": "Role-based multi-agent framework. Agents have roles, goals, and backstories. Easy to set up complex workflows.",
+      "url": "https://github.com/joaomdmoura/crewAI",
+      "stars": 22800,
+      "audioSupport": false,
+      "highlight": "Tool ecosystem now includes 50+ audio/video tools"
+    },
+    {
+      "name": "Smolagents (HuggingFace)",
+      "description": "Minimalist agent framework from HuggingFace. CodeAgent pattern — agent writes Python to solve tasks.",
+      "url": "https://github.com/huggingface/smolagents",
+      "stars": 9800,
+      "audioSupport": true,
+      "highlight": "First-class Hub integration — load any HF Space as a tool"
+    }
+  ],
+  "datasets": [
+    {
+      "name": "MusicNet",
+      "description": "330 classical music recordings with multi-instrument label alignments. The standard benchmark for AMT. CC-BY 4.0.",
+      "size": "34 GB",
+      "license": "CC-BY 4.0",
+      "url": "https://zenodo.org/record/5120004",
+      "domain": "music"
+    },
+    {
+      "name": "Slakh2100",
+      "description": "2100 multi-track MIDI/audio pairs synthesized from MIDI. Perfect for source separation + transcription. CC-BY 4.0.",
+      "size": "140 GB",
+      "license": "CC-BY 4.0",
+      "url": "https://slakh.com/",
+      "domain": "music"
+    },
+    {
+      "name": "FMA (Free Music Archive)",
+      "description": "106,574 tracks from 16,341 artists, 161 genres. Pre-computed features (mfcc, mel, chroma). CC-BY/CC-BY-NC/CC0 mixed.",
+      "size": "879 GB",
+      "license": "Mixed (CC)",
+      "url": "https://github.com/mdeff/fma",
+      "domain": "music"
+    },
+    {
+      "name": "AudioSet",
+      "description": "632 audio event classes with 2M+ human-labeled 10-second clips. Google's sound event dataset. CC-BY 4.0.",
+      "size": "240 GB",
+      "license": "CC-BY 4.0",
+      "url": "https://research.google/resources/datasets/audioset/",
+      "domain": "audio"
+    },
+    {
+      "name": "Common Voice (Mozilla)",
+      "description": "Multilingual speech corpus with 20k+ hours across 100+ languages. CC0.",
+      "size": "120 GB",
+      "license": "CC0",
+      "url": "https://commonvoice.mozilla.org/",
+      "domain": "speech"
+    },
+    {
+      "name": "LibriSpeech",
+      "description": "1000 hours of read English speech from public domain audiobooks. Standard ASR benchmark. CC-BY 4.0.",
+      "size": "60 GB",
+      "license": "CC-BY 4.0",
+      "url": "https://www.openslr.org/12",
+      "domain": "speech"
+    },
+    {
+      "name": "VGG-Sound",
+      "description": "210k video clips (10 sec each) with audio-visual correspondence. 310 sound classes. CC-BY 4.0.",
+      "size": "380 GB",
+      "license": "CC-BY 4.0",
+      "url": "https://www.robots.ox.ac.uk/~vgg/data/vggsound/",
+      "domain": "video-audio"
+    },
+    {
+      "name": "AudioCaps",
+      "description": "46k audio clips from AudioSet paired with natural language captions. The audio captioning benchmark. CC-BY 4.0.",
+      "size": "32 GB",
+      "license": "CC-BY 4.0",
+      "url": "https://audiocaps.github.io/",
+      "domain": "audio-language"
+    }
+  ],
+  "benchmarks": [
+    {
+      "name": "MusicBench",
+      "description": "Music understanding benchmark for LLMs. Covers transcription, music theory, instrument ID, lyric analysis.",
+      "url": "https://music-bench.github.io/",
+      "leaderboard": true,
+      "domain": "music"
+    },
+    {
+      "name": "AudioBench",
+      "description": "Unified benchmark for audio LLMs. Speech, sound, music, and audio reasoning tasks.",
+      "url": "https://audio-bench.github.io/",
+      "leaderboard": true,
+      "domain": "audio"
+    },
+    {
+      "name": "MIR-1K",
+      "description": "1000 song clips with pitch and melody annotations. Used for singing voice separation and pitch estimation.",
+      "url": "https://sites.google.com/site/unvoicedsoundseparation/mir-1k",
+      "leaderboard": false,
+      "domain": "music"
+    },
+    {
+      "name": "VBench",
+      "description": "Comprehensive video generation benchmark. 16 dimensions, 5K+ human annotations.",
+      "url": "https://vbench.github.io/",
+      "leaderboard": true,
+      "domain": "video"
+    },
+    {
+      "name": "EvalCrafter",
+      "description": "T2V benchmark covering 17 evaluation aspects. 700 prompts, 4 reference dimensions.",
+      "url": "https://github.com/evalcrafter/evalcrafter",
+      "leaderboard": true,
+      "domain": "video"
+    },
+    {
+      "name": "FAD (Fréchet Audio Distance)",
+      "description": "Standard metric for evaluating generated audio. Lower is better. Used in MusicGen, AudioGen, AudioLDM papers.",
+      "url": "https://github.com/google-research/google-research/tree/master/frechet_audio_distance",
+      "leaderboard": false,
+      "domain": "audio"
+    },
+    {
+      "name": "Mu-LLaVA",
+      "description": "Music understanding benchmark for multi-modal LLMs. 2.5k multiple-choice questions covering 11 music concepts.",
+      "url": "https://mu-llava.github.io/",
+      "leaderboard": true,
+      "domain": "music"
+    }
+  ],
+  "tutorials": [
+    {
+      "title": "Deploy AudioCraft to HuggingFace Spaces in 5 minutes",
+      "level": "Beginner",
+      "duration": "5 min",
+      "url": "https://huggingface.co/docs/hub/spaces-sdks-gradio",
+      "summary": "Step-by-step: clone, set HF_TOKEN, run gradio deploy, get a public URL.",
+      "tags": ["deployment", "huggingface", "gradio"]
+    },
+    {
+      "title": "Build a real-time music generation pipeline with Magenta RT 2",
+      "level": "Advanced",
+      "duration": "30 min",
+      "url": "https://magenta.tensorflow.org/magenta-realtime",
+      "summary": "Stream from Magenta RT into a Web Audio pipeline. Handle the 80ms latency budget.",
+      "tags": ["music", "streaming", "real-time"]
+    },
+    {
+      "title": "Train a Basic Pitch variant on your own data",
+      "level": "Intermediate",
+      "duration": "45 min",
+      "url": "https://github.com/spotify/basic-pitch/blob/main/README.md",
+      "summary": "Fine-tune Basic Pitch on a custom instrument or genre. Export to standard MIDI.",
+      "tags": ["transcription", "training", "midi"]
+    },
+    {
+      "title": "Make a music video with Wan 2.1 + MMAudio V2",
+      "level": "Intermediate",
+      "duration": "20 min",
+      "url": "https://github.com/Wan-Video/Wan2.1",
+      "summary": "Generate a video clip, add synchronized audio, export final video. End-to-end pipeline.",
+      "tags": ["video", "audio", "pipeline"]
+    },
+    {
+      "title": "Voice clone with XTTS v2 in 10 lines of Python",
+      "level": "Beginner",
+      "duration": "10 min",
+      "url": "https://github.com/coqui-ai/TTS",
+      "summary": "From a 6-second reference clip to a synthetic voice. Multilingual out of the box.",
+      "tags": ["tts", "voice-cloning", "python"]
+    },
+    {
+      "title": "Build a real-time vocal remover with UVR5 + Gradio",
+      "level": "Intermediate",
+      "duration": "25 min",
+      "url": "https://github.com/Anjok07/ultimatevocalremovergui",
+      "summary": "Stand up a UVR5 instance on HF Spaces, handle batch uploads, expose as an API.",
+      "tags": ["source-separation", "gradio", "api"]
+    }
+  ],
+  "videos": [
+    {
+      "title": "Wan 2.1: The open video gen we've been waiting for",
+      "channel": "Aitrepreneur",
+      "duration": "12:34",
+      "url": "https://www.youtube.com/watch?v=demo1",
+      "date": "2026-08-01",
+      "thumbnail": "🎬",
+      "summary": "Hands-on with the 14B open-weights video model. 720p output, prompt following test."
+    },
+    {
+      "title": "Magenta RealTime 2 — 80ms latency music gen explained",
+      "channel": "Yannic Kilcher",
+      "duration": "22:18",
+      "url": "https://www.youtube.com/watch?v=demo2",
+      "date": "2026-07-28",
+      "thumbnail": "🎵",
+      "summary": "Deep dive into the architecture, ablation study, and live streaming demo."
+    },
+    {
+      "title": "Build a music transcription pipeline in 30 minutes",
+      "channel": "Valerio Velardo",
+      "duration": "28:42",
+      "url": "https://www.youtube.com/watch?v=demo3",
+      "date": "2026-07-25",
+      "thumbnail": "🎼",
+      "summary": "End-to-end: Demucs → Basic Pitch → music21 → MuseScore. Full stack on HF Spaces."
+    },
+    {
+      "title": "LTX-Video: Real-time 30 fps video gen is here",
+      "channel": "Two Minute Papers",
+      "duration": "8:15",
+      "url": "https://www.youtube.com/watch?v=demo4",
+      "date": "2026-07-22",
+      "thumbnail": "⚡",
+      "summary": "How Lightricks' DiT-XL achieves real-time generation on a single H100."
+    },
+    {
+      "title": "Open-source voice cloning in 2026: state of the art",
+      "channel": "Sebastian Lague",
+      "duration": "18:55",
+      "url": "https://www.youtube.com/watch?v=demo5",
+      "date": "2026-07-19",
+      "thumbnail": "🎙️",
+      "summary": "Side-by-side: XTTS v2, GPT-SoVITS, RVC, Tortoise. Quality vs speed tradeoffs."
+    }
+  ],
+  "yourProjects": [
+    {
+      "name": "Music Transcription Monitor",
+      "description": "Weekly pulse on AMT × LLM/Agent/Foundation Models. Tracks papers, repos, and assets.",
+      "url": "https://kajica2.github.io/music-transcription-monitor/",
+      "status": "live",
+      "stack": "Vanilla HTML/JS, GitHub Pages"
+    },
+    {
+      "name": "Solo Instrument Transcription Tester",
+      "description": "Browser-only monophonic pitch detection. Generates MIDI, detects key, suggests multi-instrument arrangement.",
+      "url": "https://kajica2.github.io/music-transcription-monitor/tester.html",
+      "status": "live",
+      "stack": "Web Audio API, ACF2+ pitch detection"
+    },
+    {
+      "name": "RESONA",
+      "description": "Real-time music transcription studio. Mic → YIN pitch detection → live visualizers (scope, staff, piano roll, spectrum).",
+      "url": "https://a2k0ig13dnpvm.space.minimax.io/",
+      "status": "live",
+      "stack": "Web Audio, Canvas2D, AudioWorklet"
+    },
+    {
+      "name": "Lyra",
+      "description": "Real-time generative music PWA. Text + MIDI + mic → model → audio. Tri-fusion emitter at 20Hz.",
+      "url": null,
+      "status": "in development",
+      "stack": "WebSocket, AudioWorklet, stub server"
+    }
+  ],
+  "ideasInbox": [
+    {
+      "title": "A unified catalog of HF Spaces by audio capability",
+      "description": "Many HF Spaces do amazing things but are hard to find. Build a directory indexed by input/output modality and license. This site is the prototype.",
+      "tags": ["directory", "discovery", "huggingface"]
+    },
+    {
+      "title": "Compare two audio models side-by-side on the same input",
+      "description": "Pick two spaces (e.g., MusicGen vs Stable Audio), paste a prompt, hear both outputs at once. Could be a single Gradio page.",
+      "tags": ["comparison", "audio", "ui"]
+    },
+    {
+      "title": "Music generation with negative prompts",
+      "description": "Stable Diffusion has negative prompts. MusicGen doesn't. Would 'no vocals, no drums' work? Need a wrapper that masks unwanted stems post-hoc.",
+      "tags": ["music", "prompts", "negation"]
+    },
+    {
+      "title": "Live-coding VJ that mixes video gen with audio in real time",
+      "description": "LTX-Video is real-time. Pipe in a beat, generate visuals on the downbeat. Shader-based transitions. Browser-only, Gradio frontend + WebSocket backend.",
+      "tags": ["video", "vj", "live", "browser"]
+    },
+    {
+      "title": "Auto-summarize 1000 hours of audio",
+      "description": "Whisper + Llama-3 summary. Make a podcast search engine. Index all of Common Voice, generate summaries, expose search.",
+      "tags": ["speech", "summarization", "search"]
+    }
+  ],
+  "checklist": [
+    {
+      "title": "Ship v1 of the Gradio Pipelines directory",
+      "description": "24 tools, 12 sections, deploy command, deploy tester. Today.",
+      "done": false
+    },
+    {
+      "title": "Add GitHub repo discovery to the directory",
+      "description": "Auto-fetch Gradio repos from GitHub API, augment featured.json with trending/new entries. Sort by stars + recency.",
+      "done": false
+    },
+    {
+      "title": "Add a 'Compare' feature: side-by-side space previews",
+      "description": "Pick 2-4 tools, embed their HF Space iframes, paste a prompt, see all results.",
+      "done": false
+    },
+    {
+      "title": "Write the deploy tester that exercises the gradio-deploy command end-to-end",
+      "description": "Spawn the gradio CLI in a subprocess, parse output, surface errors, link to the resulting Space.",
+      "done": false
+    },
+    {
+      "title": "Add a daily cron to refresh the trending repos section",
+      "description": "GitHub Actions workflow: fetch top 20 audio/video repos, write to content.json, commit, deploy.",
+      "done": false
+    },
+    {
+      "title": "Add support for self-hosted gradio apps in the directory",
+      "description": "Some teams run gradio apps on their own infra. Add a 'self-hosted' badge and a custom URL field.",
+      "done": false
+    },
+    {
+      "title": "Build a CLI that mirrors the directory API",
+      "description": "gradio-dir search 'voice cloning' --sort stars. Output: ranked list with deploy commands. One-line install.",
+      "done": false
+    }
+  ]
+}
