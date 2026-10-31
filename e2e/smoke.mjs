@@ -15,11 +15,39 @@
 //
 // Exit 0 on pass, non-zero on fail. Captures pass.png / fail.png.
 
-import puppeteer from '/Users/kaidejuricmasscmbook/.minimax/workspace/gradio-hub/node_modules/puppeteer/lib/puppeteer/puppeteer.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 
-const BASE = 'http://127.0.0.1:8765';
+const require = createRequire(import.meta.url);
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+// Resolve puppeteer from this project first, then fall back to a sibling
+// checkout that already has it. A hard-coded absolute path into an unrelated
+// repo breaks the moment that repo moves or is deleted.
+async function loadPuppeteer() {
+  const candidates = [
+    'puppeteer',
+    'puppeteer-core',
+    path.join(ROOT, 'node_modules/puppeteer'),
+    path.join(ROOT, '../gradio-hub/node_modules/puppeteer'),
+    path.join(ROOT, '../gradio-directory/node_modules/puppeteer'),
+  ];
+  for (const c of candidates) {
+    try {
+      const mod = require(c);
+      return mod.default ?? mod;
+    } catch {}
+  }
+  throw new Error(
+    'puppeteer not found. Run `npm install` in this folder, ' +
+      'or install it in ../gradio-hub.'
+  );
+}
+const puppeteer = await loadPuppeteer();
+
+const BASE = process.env.E2E_URL || 'http://127.0.0.1:8765';
 const ARTIFACTS = path.dirname(new URL(import.meta.url).pathname) + '/artifacts';
 await fs.mkdir(ARTIFACTS, { recursive: true });
 

@@ -22,15 +22,23 @@ Exit 0 on pass, non-zero on fail. Screenshots go to
 ## Run
 
 ```bash
-# 1. Boot a static server
+# 1. Install the test dependency (once)
 cd gradio-pipelines
+npm install
+
+# 2. Boot a static server
 python3 -m http.server 8765 &
 
-# 2. Run the e2e
+# 3. Run the e2e
 node e2e/smoke.mjs
 ```
 
-> The test currently imports puppeteer from
-> `../gradio-hub/node_modules/puppeteer` to reuse an existing install.
-> For a clean checkout, run `npm install puppeteer` in this folder and
-> change the import to `from 'puppeteer'`.
+To test a deployed copy instead of the local server:
+
+```bash
+E2E_URL=https://kajica2.github.io/gradio-pipelines node e2e/smoke.mjs
+```
+
+> The test resolves `puppeteer` from this project first, then falls back to a
+> sibling checkout that already has it installed. A hard-coded absolute path
+> into an unrelated repo breaks as soon as that repo moves or is deleted.

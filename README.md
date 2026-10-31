@@ -25,9 +25,10 @@ gradio-pipelines/
 │   ├── README_HF.md        # Hugging Face Space metadata (sdk: docker, port 7860)
 │   ├── .gitattributes      # Makes Dockerfile + README_HF.md survive the deploy
 │   └── README.md           # Human-facing README for the Space
-├── e2e/                    # Puppeteer smoke test (22 checks, all green)
+├── e2e/                    # Puppeteer smoke test (all green)
 │   ├── smoke.mjs
 │   └── README.md
+├── package.json            # e2e tooling (puppeteer) — the site itself has no build step
 └── README.md               # This file
 ```
 
