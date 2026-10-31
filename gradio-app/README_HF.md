@@ -31,8 +31,13 @@ This is the canonical "deploy in one command" example for the
 export HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
 
 # 2. Deploy
-gradio deploy --token $HF_TOKEN --repo https://github.com/kajica2/gradio-pipelines/tree/main/gradio-app
+git clone --depth 1 https://github.com/kajica2/gradio-pipelines
+cd gradio-pipelines/gradio-app
+HF_TOKEN=$HF_TOKEN gradio deploy
 ```
+
+`gradio deploy` deploys the current directory, so clone first and `cd` into
+`gradio-app`. The token is read from `HF_TOKEN`.
 
 Or click the "Deploy to HF" button on the directory page itself:
 [open the directory →](https://kajica2.github.io/gradio-pipelines/)

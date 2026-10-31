@@ -6,11 +6,13 @@ Smoke-tests the directory site the way a user would use it:
 2. Asserts the sidebar has the 11 category filters.
 3. Searches for "whisper" → 1 card.
 4. Clicks a category filter → grid shrinks.
-5. Opens a card → detail modal opens with the `gradio deploy` command
-   (containing `--token YOUR_HF_TOKEN --repo <url>`), the
-   `huggingface.co/settings/tokens` link, and a working copy-to-clipboard.
+5. Opens a card → detail modal opens with the deploy command
+   (`git clone --depth 1 <repo> && cd <dir> && HF_TOKEN=YOUR_HF_TOKEN gradio deploy`),
+   the `huggingface.co/settings/tokens` link, and a working copy-to-clipboard.
+   The test also asserts the command does **not** use `--token` / `--repo`,
+   which the Gradio CLI has never accepted.
 6. Loads `tester.html` → 24 tool chips, `#cmd-preview` shows the full
-   `gradio deploy --token $HF_TOKEN --repo ... --space-name ... --hardware ...` command.
+   `git clone … && cd … && HF_TOKEN=$HF_TOKEN gradio deploy` command.
 7. Resizes to 390 px → mobile still renders all 24 cards.
 8. Watches `console`, `pageerror`, and `requestfailed` → expects 0 errors.
 

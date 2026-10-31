@@ -150,8 +150,14 @@ python3 -m http.server 8000
    ```bash
    pip install gradio
    export HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
-   gradio deploy --token $HF_TOKEN --repo https://github.com/owner/tool
+   git clone --depth 1 https://github.com/owner/tool
+   cd tool
+   HF_TOKEN=$HF_TOKEN gradio deploy
    ```
+   Note: the `gradio deploy` CLI takes only `--title` / `--app-file` /
+   `--provider` and always deploys the **current directory**. There is no
+   `--token` or `--repo` flag — the token comes from `HF_TOKEN`, and the repo
+   has to be cloned first.
 4. The Space URL is printed at the end. Open it. Done.
 
 ## Tech stack

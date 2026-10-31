@@ -24,8 +24,14 @@ Docker image is <100 MB and builds in <60s on Hugging Face's
 export HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
 
 # Deploy
-gradio deploy --token $HF_TOKEN --repo https://github.com/kajica2/gradio-pipelines/tree/main/gradio-app
+git clone --depth 1 https://github.com/kajica2/gradio-pipelines
+cd gradio-pipelines/gradio-app
+HF_TOKEN=$HF_TOKEN gradio deploy
 ```
+
+`gradio deploy` always deploys the current directory, so clone first and
+`cd` into `gradio-app` before running it. The token is read from
+`HF_TOKEN` — the CLI has no `--token` or `--repo` flag.
 
 The directory's [deploy tester](https://kajica2.github.io/gradio-pipelines/tester.html)
 walks you through this end-to-end with live validation of your HF token.

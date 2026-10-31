@@ -6,8 +6,9 @@
 //   2. Filtering by a category shrinks the grid
 //   3. Search filters the grid
 //   4. Opening a card opens the detail modal with the deploy command
-//   5. The deploy command contains `gradio deploy --token` and the
-//      YOUR_HF_TOKEN placeholder + the HF token settings URL
+//   5. The deploy command matches the real Gradio CLI contract:
+//      clone + cd + HF_TOKEN=… gradio deploy (no --token / --repo flags,
+//      which the CLI has never accepted), plus the HF token settings URL
 //   6. tester.html loads with the tool picker + command line
 //   7. tester.html's #cmd-preview shows the full gradio deploy command
 //   8. No JS errors anywhere
@@ -120,7 +121,9 @@ try {
         visible,
         cmdText,
         hasDeployCmd: cmdText.includes('gradio deploy'),
-        hasToken: cmdText.includes('--token'),
+        hasClone: cmdText.includes('git clone'),
+        hasCd: cmdText.includes('cd '),
+        hasTokenEnv: cmdText.includes('HF_TOKEN='),
         hasTokenPlaceholder: cmdText.includes('YOUR_HF_TOKEN') || cmdText.includes('$HF_TOKEN'),
         hasSettingsLink: html.includes('huggingface.co/settings/tokens'),
       };
@@ -129,8 +132,20 @@ try {
     else fail(`detail modal did not open (found=${modalState.found}, visible=${modalState.visible})`);
     if (modalState.hasDeployCmd) pass(`modal deploy command: "${modalState.cmdText.slice(0, 80)}…"`);
     else fail('modal deploy command missing `gradio deploy`');
-    if (modalState.hasToken) pass('modal deploy command has --token flag');
-    else fail('modal deploy command missing --token flag');
+    // The Gradio CLI only accepts --title / --app-file / --provider and always
+    // deploys the current directory, so the command must clone + cd + pass the
+    // token via HF_TOKEN. It must NOT use --token / --repo.
+    if (modalState.hasClone) pass('modal deploy command clones the repo first');
+    else fail('modal deploy command does not clone the repo');
+    if (modalState.hasCd) pass('modal deploy command cds into the cloned repo');
+    else fail('modal deploy command does not cd into the cloned repo');
+    if (modalState.hasTokenEnv) pass('modal deploy command passes the token via HF_TOKEN');
+    else fail('modal deploy command does not pass the token via HF_TOKEN');
+    if (!modalState.cmdText.includes('--token') && !modalState.cmdText.includes('--repo')) {
+      pass('modal deploy command uses no invalid CLI flags (--token/--repo)');
+    } else {
+      fail('modal deploy command still uses --token/--repo, which the Gradio CLI does not accept');
+    }
     if (modalState.hasTokenPlaceholder) pass('modal contains the HF_TOKEN placeholder');
     else fail('modal missing the HF_TOKEN placeholder');
     if (modalState.hasSettingsLink) pass('modal links to huggingface.co/settings/tokens');
@@ -199,12 +214,17 @@ try {
   });
   if (cmdPreview.includes('gradio deploy')) pass('tester #cmd-preview shows the gradio deploy command');
   else fail('tester #cmd-preview missing `gradio deploy`');
-  if (cmdPreview.includes('--token')) pass('tester command has --token flag');
-  else fail('tester command missing --token flag');
-  if (cmdPreview.includes('--repo')) pass('tester command has --repo flag');
-  else fail('tester command missing --repo flag');
-  if (cmdPreview.includes('HF_TOKEN')) pass('tester command references $HF_TOKEN');
-  else fail('tester command missing $HF_TOKEN reference');
+  if (cmdPreview.includes('git clone')) pass('tester command clones the repo first');
+  else fail('tester command missing `git clone`');
+  if (cmdPreview.includes('cd ')) pass('tester command cds into the cloned repo');
+  else fail('tester command missing `cd`');
+  if (cmdPreview.includes('HF_TOKEN=')) pass('tester command passes the token via HF_TOKEN');
+  else fail('tester command missing HF_TOKEN=');
+  if (!cmdPreview.includes('--token') && !cmdPreview.includes('--repo')) {
+    pass('tester command uses no invalid CLI flags (--token/--repo)');
+  } else {
+    fail('tester command still uses --token/--repo, which the Gradio CLI does not accept');
+  }
 
   // Token input
   const tokenInput = await page.$('input[type="password"], #token, input[name*="token" i]');

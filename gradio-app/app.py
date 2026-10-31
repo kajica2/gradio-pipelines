@@ -1,6 +1,7 @@
 """
 Smart Audio Toolkit — a working Gradio app that ships with the directory.
-Deploys to a Hugging Face Space with `gradio deploy --token $HF_TOKEN --repo <this-repo>`.
+Deploys to a Hugging Face Space with `gradio deploy` (clone the repo, `cd`
+into this folder, then run `HF_TOKEN=... gradio deploy`).
 Zero local setup beyond the deploy command.
 
 Features:

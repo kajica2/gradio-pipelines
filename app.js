@@ -340,10 +340,25 @@
     const descEl = $('#modal-desc');
     descEl.innerHTML = (tool.longDescription || tool.description || '').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '<br><br>');
 
-    // Deploy command
-    const cmd = `gradio deploy --token YOUR_HF_TOKEN --repo ${tool.repo || `https://github.com/${tool.author}/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}`;
+    // Deploy command.
+    //
+    // The Gradio CLI's `deploy` subcommand accepts only --title / --app-file /
+    // --provider. It has NEVER accepted --token or --repo, and it always
+    // deploys the *current working directory* to a new Space in the logged-in
+    // account. So the honest one-liner clones the repo first, cd's into it
+    // (the Space name is derived from the clone directory name), and passes
+    // the token through HF_TOKEN — the highest-priority token source in
+    // huggingface_hub (utils/_auth.py).
+    const repoURL = tool.repo || `https://github.com/${tool.author}/${tool.name.toLowerCase().replace(/\s+/g, '-')}`;
+    const repoDir = repoURL.split('/').filter(Boolean).pop();
+    const cmd = `git clone --depth 1 ${repoURL} && cd ${repoDir} && HF_TOKEN=YOUR_HF_TOKEN gradio deploy`;
     const cmdEl = $('#deploy-cmd');
-    cmdEl.innerHTML = `gradio deploy <span class="deploy__token">--token YOUR_HF_TOKEN</span> --repo ${escapeHTML(tool.repo || '')}`;
+    cmdEl.innerHTML =
+      `<span class="deploy__token">git clone --depth 1</span> ${escapeHTML(repoURL)} ` +
+      `<span class="deploy__token">&amp;&amp; cd ${escapeHTML(repoDir)}</span> ` +
+      `<span class="deploy__token">&amp;&amp;</span> ` +
+      `<span class="deploy__token">HF_TOKEN=YOUR_HF_TOKEN</span> ` +
+      `<span class="deploy__token">gradio deploy</span>`;
 
     // Copy
     const copyBtn = $('#deploy-copy');

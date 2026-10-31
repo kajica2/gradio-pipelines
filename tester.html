@@ -164,6 +164,8 @@
           </div>
           <p class="dim" style="font-size: var(--fs-xs); margin: var(--s-2) 0 0 0;">
             Defaults to <code id="space-name-default">username/toolname</code>. Spaces are public by default — name it accordingly.
+            <br /><br />The <code>gradio deploy</code> CLI asks for this interactively when it runs — there is no
+            <code>--space-name</code> flag, so this field is here to show you what to type when prompted.
           </p>
         </div>
 
@@ -180,6 +182,10 @@
               <option value="a100-large">A100 large GPU ($4.50/hr) — 70B+ models, long video</option>
             </select>
           </div>
+          <p class="dim" style="font-size: var(--fs-xs); margin: var(--s-2) 0 0 0;">
+            The CLI prompts for hardware at deploy time — there is no <code>--hardware</code> flag.
+            Pick here so you know what to answer.
+          </p>
         </div>
 
         <!-- The command + run -->
@@ -260,9 +266,9 @@
       hardware: 'cpu-basic',
       steps: [
         { id: 'install', title: 'Install the Gradio CLI', desc: 'pip install gradio (already includes the deploy command)' },
-        { id: 'login', title: 'Authenticate with Hugging Face', desc: 'gradio deploy will prompt for your HF token on first run' },
-        { id: 'select', title: 'Pick a Space name and hardware', desc: 'Defaults to your username + toolname; upgrade to T4 if you need GPU' },
-        { id: 'run', title: 'Run the deploy command', desc: 'gradio deploy will clone the repo, build the Space, and push to HF' },
+        { id: 'login', title: 'Authenticate with Hugging Face', desc: 'Set HF_TOKEN, or let gradio deploy prompt for it on first run' },
+        { id: 'select', title: 'Pick a Space name and hardware', desc: 'The CLI asks for these interactively — defaults to your username + toolname' },
+        { id: 'run', title: 'Run the deploy command', desc: 'Clone the repo, cd into it, then gradio deploy builds the Space and pushes it to HF' },
         { id: 'verify', title: 'Verify the Space is live', desc: 'Visit the Space URL, smoke-test the UI, check the build log' },
       ],
       runState: {},
@@ -402,15 +408,21 @@
     });
 
     // ----- Command preview -----
+    //
+    // `gradio deploy` accepts only --title / --app-file / --provider and always
+    // deploys the *current working directory* to a new Space in the logged-in
+    // account. It has never accepted --token / --repo / --space-name /
+    // --hardware. The honest command therefore clones the repo, cd's into it
+    // (the Space name is derived from the clone directory name), and passes the
+    // token through the HF_TOKEN environment variable.
     const updateCommand = () => {
       const repo = state.repo || 'https://github.com/owner/repo';
+      const repoDir = repo.split('/').filter(Boolean).pop() || 'repo';
       const spaceName = state.spaceName || (state.tool ? `username/${state.tool.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'username/my-space');
       document.getElementById('space-name-default').textContent = spaceName;
-      const cmd = `gradio deploy \\
-  --token $HF_TOKEN \\
-  --repo ${repo} \\
-  --space-name ${spaceName} \\
-  --hardware ${state.hardware}`;
+      const cmd = `git clone --depth 1 ${repo} \\
+  && cd ${repoDir} \\
+  && HF_TOKEN=$HF_TOKEN gradio deploy`;
       document.getElementById('cmd-preview').textContent = cmd;
     };
     updateCommand();
@@ -577,7 +589,10 @@ ${cmd}
       setStep('run', 'active');
       await sleep(800);
       log('─'.repeat(60), 'info');
-      log(`$ gradio deploy --token *** --repo ${state.repo} --space-name ${spaceName} --hardware ${state.hardware}`, 'cmd');
+      const repoDir = (state.repo || 'https://github.com/owner/repo').split('/').filter(Boolean).pop() || 'repo';
+      log(`$ git clone --depth 1 ${state.repo}`, 'cmd');
+      log(`$ cd ${repoDir}`, 'cmd');
+      log(`$ HF_TOKEN=*** gradio deploy`, 'cmd');
       await sleep(600);
       log('Cloning repository…', 'info');
       log(`git clone --depth 1 ${state.repo} /tmp/gradio-deploy-${Date.now()}`, 'cmd');
