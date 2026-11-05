@@ -24,7 +24,7 @@ builds in < 60 s on Hugging Face's `cpu-basic` tier.
 ## How to deploy (this Space)
 
 This is the canonical "deploy in one command" example for the
-[Gradio Pipelines Directory](https://kajica2.github.io/gradio-pipelines/).
+[Gradio Pipelines Directory](https://kajica2.github.io/gradio-pipeline-directory/).
 
 ```bash
 # 1. Get a write-enabled token at https://huggingface.co/settings/tokens
@@ -40,7 +40,7 @@ HF_TOKEN=$HF_TOKEN gradio deploy
 `gradio-app`. The token is read from `HF_TOKEN`.
 
 Or click the "Deploy to HF" button on the directory page itself:
-[open the directory →](https://kajica2.github.io/gradio-pipelines/)
+[open the directory →](https://kajica2.github.io/gradio-pipeline-directory/)
 
 ## How to use (this Space)
 

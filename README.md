@@ -1,11 +1,22 @@
 # Gradio Pipelines Directory
 
+> **This repo is the v0.2 snapshot. The live project is
+> [kajica2/gradio-pipeline-directory](https://github.com/kajica2/gradio-pipeline-directory)
+> → https://kajica2.github.io/gradio-pipeline-directory/**
+>
+> That build replaced the 24-tool grid here with a 12-tool directory plus a
+> 12-section × 5-persona-lens Hub, added Open Graph/SEO, and fixed the
+> accessibility regressions that Lighthouse caught. Work on the directory
+> continues there — this repo is kept as history, and its own Pages site was
+> never enabled, so every `kajica2.github.io/gradio-pipelines/` URL below
+> now points at the live one instead.
+
 A live, automatically updated directory of open-source, fully working
 Gradio pipelines that handle audio and video tasks. **Zero local setup**
 — deploy any tool to Hugging Face Spaces with just an API key and a
 single command.
 
-**Live site:** https://kajica2.github.io/gradio-pipelines/
+**Live site:** https://kajica2.github.io/gradio-pipeline-directory/
 
 ## What's in here
 
@@ -124,7 +135,7 @@ It's a static site — any static host works.
 
 1. Push this repo to GitHub
 2. Settings → Pages → Source: `main` branch, `/` (root)
-3. Done. URL: `https://<user>.github.io/gradio-pipelines/`
+3. Done. URL: `https://<user>.github.io/<repo>/`
 
 ### Vercel / Netlify
 

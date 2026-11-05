@@ -36,7 +36,7 @@ node e2e/smoke.mjs
 To test a deployed copy instead of the local server:
 
 ```bash
-E2E_URL=https://kajica2.github.io/gradio-pipelines node e2e/smoke.mjs
+E2E_URL=https://kajica2.github.io/gradio-pipeline-directory node e2e/smoke.mjs
 ```
 
 > The test resolves `puppeteer` from this project first, then falls back to a

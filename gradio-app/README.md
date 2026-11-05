@@ -2,7 +2,7 @@
 
 A working Gradio app that ships with the [Gradio Pipelines Directory](../).
 This is the "deploy in one command" example used by the directory's
-[deploy tester](https://kajica2.github.io/gradio-pipelines/tester.html).
+[deploy tester](https://kajica2.github.io/gradio-pipeline-directory/tester.html).
 
 ## What it does
 
@@ -33,7 +33,7 @@ HF_TOKEN=$HF_TOKEN gradio deploy
 `cd` into `gradio-app` before running it. The token is read from
 `HF_TOKEN` — the CLI has no `--token` or `--repo` flag.
 
-The directory's [deploy tester](https://kajica2.github.io/gradio-pipelines/tester.html)
+The directory's [deploy tester](https://kajica2.github.io/gradio-pipeline-directory/tester.html)
 walks you through this end-to-end with live validation of your HF token.
 
 ## Run locally (optional)
